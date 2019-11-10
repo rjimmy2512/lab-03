@@ -13,7 +13,6 @@ Image.prototype.render = function() {
   return template(this);
 };
 
-
 Image.readJson = (page) => {
   Image.all = [];
 
@@ -35,7 +34,6 @@ Image.readJson = (page) => {
   });
 };
 
-
 Image.sortBy = (array, property) => {
   array.sort((a, b) => {
     let firstComparison = a[property];
@@ -43,7 +41,6 @@ Image.sortBy = (array, property) => {
     return (firstComparison > secondComparison) ? 1 : (firstComparison < secondComparison) ? -1 : 0;
   });
 };
-
 
 Image.populateFilter = () => {
   let filterKeywords = [];
@@ -63,7 +60,6 @@ Image.populateFilter = () => {
     $('select').append(optionTag);
   });
 };
-
 
 Image.handleFilter = () => {
   $('select').on('change', function() {
@@ -86,7 +82,6 @@ Image.handleSort = () => {
   });
 };
 
-
 Image.handleImageEvents = () => {
   $('main').on('click', 'div', function(event) {
     event.stopPropagation();
@@ -105,14 +100,12 @@ Image.handleImageEvents = () => {
   });
 };
 
-
 Image.handleNavEvents = () => {
   $('footer ul, header ul').on('click', 'li', function() {
     $('#image-container').empty();
     Image.readJson($(this).attr('id'));
   });
 };
-
 
 $(() => {
   Image.readJson(1);

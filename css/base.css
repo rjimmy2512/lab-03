@@ -3,25 +3,28 @@ div {
   margin: 40px;
 }
 
+
 h1 {
   text-align: center;
   font: bold italic small-caps normal 60px Arial, Helvetica;
 }
 
+
 h2 {
   font: bold 20px Georgia, serif; 
 }
+
 
 header {
   background-color: rgb(129, 190, 201);
   
 }
 
+
 header select {
   font: bold 15px arial, sans-serif;
   display: block;
   margin: 20px auto;
-  
 }
 
 header form {
@@ -45,6 +48,5 @@ header ul li {
   white-space: nowrap; 
   width: 200px; 
   overflow: hidden;
-  text-overflow: ellipsis;
-   
+  text-overflow: ellipsis; 
 }
