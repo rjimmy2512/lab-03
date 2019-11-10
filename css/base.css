@@ -37,7 +37,7 @@ header ul li {
 }
 
 #image-container div {
-flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 #image-container p {
