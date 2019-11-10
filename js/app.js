@@ -1,105 +1,116 @@
 'use strict';
 
-function Picture(horn) {
-  this.image_url = horn.image_url;
-  this.title = horn.title;
-  this.description = horn.description;
-  this.keyword = horn.keyword;
+function Image(item) {
+  this.image_url = item.image_url;
+  this.title = item.title;
+  this.description = item.description;
+  this.keyword = item.keyword;
+  this.horns = item.horns;
 }
 
-Picture.allHorns = [];
-
-//Use jQuery to make a copy of the HTML template of the photo component.
-
-Picture.prototype.render = function() {
-  $('main').append('<div class="clone"></div>');
-  let hornClone = $('div[class="clone"]');
-
-  let hornHtml = $('#photo-template').html();
-
-  hornClone.html(hornHtml);
-
-  hornClone.find('h2').text(this.title);
-  hornClone.find('img').attr('src', this.image_url);
-  hornClone.find('p').text(this.description);
-  hornClone.removeClass('clone');
-  hornClone.attr('class', this.keyword);
+Image.prototype.render = function() {
+  let template = Handlebars.compile($('#photo-template').html());
+  return template(this);
 };
 
-//Use AJAX, specifically $.get(), to read the provided JSON file.
-//Failed to load resource: the server responded with a status of 404 (Not Found)
+Image.readJson = (page) => {
+  Image.all = [];
 
-Picture.readJson = () => {
-  $.get('./data/page-1.json')
-    .then(data => {
-      data.forEach(element => {
-        Picture.allHorns.push(new Picture(element));
-      });
-    })
-    .then(Picture.loadHorns);
+  $('main').empty();
+
+  $.get(`data/page-${page}.json`).then(data => {
+
+    data.forEach(item => {
+      Image.all.push(new Image(item));
+    });
+
+    Image.sortBy(Image.all, 'title');
+
+    Image.all.forEach( image => {
+      $('#image-container').append(image.render());
+    });
+    Image.populateFilter();
+
+  });
 };
 
-$(() => Picture.readJson());
-
-
-Picture.readJson = () => {
-  $.get('./data/page-2.json')
-    .then(data => {
-      data.forEach(element => {
-        Picture.allHorns.push(new Picture(element));
-      });
-    })
-    .then(Picture.loadHorns);
+Image.sortBy = (array, property) => {
+  array.sort((a, b) => {
+    let firstComparison = a[property];
+    let secondComparison = b[property];
+    return (firstComparison > secondComparison) ? 1 : (firstComparison < secondComparison) ? -1 : 0;
+  });
 };
 
-Picture.loadHorns = () => {
-  Picture.allHorns.forEach(horn => horn.render());
+Image.populateFilter = () => {
+  let filterKeywords = [];
+
+  $('option').not(':first').remove();
+
+  Image.all.forEach(image => {
+    if (!filterKeywords.includes(image.keyword)) {
+      filterKeywords.push(image.keyword);
+    }
+  });
+
+  filterKeywords.sort();
+
+  filterKeywords.forEach(keyword => {
+    let optionTag = `<option value="${keyword}">${keyword}</option>`;
+    $('select').append(optionTag);
+  });
 };
 
-$(() => Picture.readJson());
+Image.handleFilter = () => {
+  $('select').on('change', function() {
+    let selected = $(this).val();
+    if(selected !== 'default') {
+      $('div').hide();
+      $(`div.${selected}`).fadeIn();
+    }
+  });
+};
 
-//PAGINATION
+Image.handleSort = () => {
+  $('input').on('change', function() {
+    $('select').val('default');
+    $('div').remove();
+    Image.sortBy(Image.all, $(this).attr('id'));
+    Image.all.forEach(image => {
+      $('#image-container').append(image.render());
+    });
+  });
+};
 
-//Partial pagination code to render page-1.json images
+Image.handleImageEvents = () => {
+  $('main').on('click', 'div', function(event) {
+    event.stopPropagation();
+    let $clone = $(this).clone();
+    let elements = $clone[0].children;
 
-$('#target1').click(function() {
-  $(() => Picture.readJsonOne());
+    $('section').addClass('active').html(elements);
+
+    $(window).scrollTop(0);
+  });
+
+  $('body').on('click', function() {
+    const $section = $('section');
+    $section.empty();
+    $section.removeClass('active');
+  });
+};
+
+Image.handleNavEvents = () => {
+  $('footer ul, header ul').on('click', 'li', function() {
+    $('#image-container').empty();
+    Image.readJson($(this).attr('id'));
+  });
+};
+
+$(() => {
+  Image.readJson(1);
+  Image.handleFilter();
+  Image.handleImageEvents();
+  Image.handleNavEvents();
+  Image.handleSort();
 });
-
-//Partial pagination code to render page-2.json images
-
-$('#target2').click(function() {
-  $(() => Picture.readJsonTwo());
-});
-
-
-
-//   $(this).Picture.readJson('./data/page-2.json');
-// });
-
-
-
-//checkbox handler - change event.
-// shows difference between attr & prop
-// $('input[name=check]').on('change', function() {
-//   let $checkbox = $(this);
-
-//   $('#checked-state').html('.attr("checked"): ' + $checkbox.attr('checked') + '<br>.prop( "checked" ): ' + $checkbox.prop('checked'));
-
-// }).change();
-
-// select box filtering
-$('select[value="keyword"]').on('change', function() {
-  let $selection = $(this).keyword();
-  $('image_url').show();
-  $(`img[description="${$selection}"]`).show();
-});
-
-//DOM-ready function
-$(document).ready(function() {
-  $('.tab-content').hide();
-});
-
-
-
-

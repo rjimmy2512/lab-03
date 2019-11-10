@@ -5,5 +5,46 @@ div {
 
 h1 {
   text-align: center;
+  font: bold italic small-caps normal 60px Arial, Helvetica;
 }
 
+h2 {
+  font: bold 20px Georgia, serif; 
+}
+
+header {
+  background-color: rgb(129, 190, 201);
+  
+}
+
+header select {
+  font: bold 15px arial, sans-serif;
+  display: block;
+  margin: 20px auto;
+  
+}
+
+header form {
+  font: bold normal 20px Arial, Helvetica, sans-serif;
+  flex: auto;
+}
+
+header ul li {
+  display: inline;
+  font: bold 20px Georgia, serif;
+  margin-left: 170px;
+  flex: auto;
+}
+
+#image-container div {
+flex-wrap: wrap;
+}
+
+#image-container p {
+  font: bold 14px Georgia, serif;
+  white-space: nowrap; 
+  width: 200px; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+   
+}

@@ -3,3 +3,9 @@ div img {
   border: 3px solid rgb(27, 19, 27);
   border-radius: 10px;
 }
+
+
+header ul li:hover {
+  color: rgb(222, 245, 222);
+}
+
